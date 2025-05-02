@@ -1,0 +1,23 @@
+h1 {
+    font-size: 4rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+.btn-primary {
+    background-color: #53288b;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #6a33a2;
+}

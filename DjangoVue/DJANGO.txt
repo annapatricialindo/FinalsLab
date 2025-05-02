@@ -1,0 +1,15 @@
+DJANGO:
+
+python -m venv my_venv 
+
+my_venv/Scripts/activate 
+
+pip install django
+pip install djangorestframework
+pip install django-cors-headers
+pip install MySQL client
+pip install Pillow
+
+Reference:
+
+https://tomdekan.com/articles/vue-auth
