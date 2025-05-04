@@ -1,0 +1,211 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #fff;
+    background-color: #000;
+    overflow-x: hidden;
+}
+
+section .wave, .stars {
+    pointer-events: none; /* Allows clicks to pass through */
+}
+
+section {
+    z-index: 1;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    text-align: center;
+    padding-top: 60px;
+    overflow: hidden;
+    /* Offset for nav */
+}
+
+section .wave {
+    pointer-events: none; /* Ensures waves don’t block interactions */
+    z-index: 990; /* Keep it below .container */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 0) 90%),
+                url('/static/main/wave.png');
+    background-size: 1000px 100px;
+    mix-blend-mode: screen; /* Blends the wave with the dark background */
+    filter: blur(2px) brightness(1.2);
+}
+
+section .wave.wave1 {
+    animation: animate1 10s linear infinite;
+    z-index: 1000;
+    opacity: 0.7;
+    bottom: 0;
+}
+
+@keyframes animate1 {
+    0% {
+        background-position-x: 0;
+    }
+
+    100% {
+        background-position-x: 1000px;
+    }
+}
+
+.container {
+    position: relative;
+    z-index: 1002; /* Ensure it's above waves */
+    padding: 20px;
+    width: 80%;
+    max-width: 95%;
+    min-height: 250px; /* Ensure some height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: auto;
+    
+    margin-top: 10vh;  /* Push it down a bit */
+    margin-bottom: 10vh; /* Add spacing at the bottom */
+}
+
+#item-form-container {
+    position: relative;
+    z-index: 1002;
+    padding: 20px;
+    width: 70%; /* Wider */
+    max-width: 700px; /* Keep a reasonable max width */
+    min-height: auto; /* No unnecessary height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 8vh;
+    margin-bottom: 8vh;
+    border-radius: 10px;
+}
+
+.table-body-scroll {
+    display: block;
+    max-height: 300px; /* Adjust height as needed */
+    overflow-y: auto;
+}
+
+.table-body-scroll tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.table thead, .table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+
+.card {
+    width: 100%; /* Ensure card stretches within container */
+}
+
+.stars, .wave {
+    overflow: hidden; /* Ensures these don’t force scrolling */
+}
+
+section .wave.wave2 {
+    animation: animate2 15s linear infinite;
+    z-index: 999;
+    opacity: 0.4;
+    animation-delay: -5s;
+    bottom: 10px;
+}
+
+@keyframes animate2 {
+    0% {
+        background-position-x: 0;
+    }
+
+    100% {
+        background-position-x: 1000px;
+    }
+}
+
+section .wave.wave3 {
+    animation: animate3 30s linear infinite;
+    z-index: 998;
+    opacity: 0.2;
+    animation-delay: -2s;
+    bottom: 15px;
+}
+
+@keyframes animate3 {
+    0% {
+        background-position-x: 0;
+    }
+
+    100% {
+        background-position-x: 1000px;
+    }
+}
+
+section .wave.wave4 {
+    animation: animate4 17s linear infinite;
+    z-index: 997;
+    opacity: 0.5;
+    animation-delay: 0s;
+    bottom: 10px;
+}
+
+@keyframes animate4 {
+    0% {
+        background-position-x: 0;
+    }
+
+    100% {
+        background-position-x: 1000px;
+    }
+}
+
+/* Container for Stars */
+.stars {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    background: transparent;
+    overflow: visible;
+}
+
+/* Stars */
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: white;
+    border-radius: 50%;
+    opacity: 0;
+    animation: twinkle 3s infinite alternate ease-in-out;
+}
+
+/* Star Twinkle Animation */
+@keyframes twinkle {
+    0% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
