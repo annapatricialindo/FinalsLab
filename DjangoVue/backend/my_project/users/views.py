@@ -1,55 +1,54 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from django.contrib.auth import authenticate, login, logout
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer, CharField, EmailField
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import CreateAPIView
+from .serializers import UserRegisterSerializer, UserLoginSerializer
+from users.permissions import IsCustomer, IsEmployee
 
-class UserRegisterSerializer(Serializer):
-    username = CharField(max_length=100)
-    email = EmailField()
-    password = CharField(max_length=100)
+class RegisterView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRegisterSerializer
 
-class RegisterView(APIView):
+    def perform_create(self, serializer):
+        user = serializer.save()
+        role = self.request.data.get('role', 'customer')
+        group, _ = Group.objects.get_or_create(name=role)
+        user.groups.add(group)
+
+class LoginView(CreateAPIView):
+    serializer_class = UserLoginSerializer
+
     def post(self, request):
-        serializer = UserRegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            user = User.objects.create_user(
-                username=serializer.validated_data['username'],
-                email=serializer.validated_data['email'],
-                password=serializer.validated_data['password']
-            )
-            return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
+        username = serializer.validated_data['username']
+        password = serializer.validated_data['password']
 
-from django.contrib.auth import authenticate, login
-from rest_framework.views import APIView
-from rest_framework.response import Response
-
-class LoginView(APIView):
-    def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        
         user = authenticate(username=username, password=password)
         if user is not None:
-            login(request, user)  # This creates a session
+            login(request, user)
             return Response({"message": "Login successful"})
-        else:
-            return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-
-from django.contrib.auth import logout
-from rest_framework.views import APIView
-from rest_framework.response import Response
+        return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
     def post(self, request):
         logout(request)
-
         response = Response({"message": "Logged out successfully"})
-
-        # Set the 'sessionid' cookie to expire
         response.delete_cookie('sessionid')
-
         return response
 
+class EmployeeOnlyView(APIView):
+    permission_classes = [IsAuthenticated, IsEmployee]
+
+    def get(self, request):
+        return Response({"message": "Welcome, employee!"})
+
+class CustomerOnlyView(APIView):
+    permission_classes = [IsAuthenticated, IsCustomer]
+
+    def get(self, request):
+        return Response({"message": "Welcome, customer!"})
