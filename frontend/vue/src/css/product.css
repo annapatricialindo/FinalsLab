@@ -1,0 +1,311 @@
+body {
+    overflow-x: hidden;
+    background: black;
+    /* Makes sure background is black */
+    color: white;
+}
+
+.container {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.navbar {
+    background: rgba(255, 255, 255, 0.1);
+    /* Semi-transparent background */
+    backdrop-filter: blur(10px);
+    /* Blurry glass effect */
+    -webkit-backdrop-filter: blur(10px);
+    /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Subtle border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Soft shadow */
+}
+
+.navbar a.navbar-brand,
+.navbar button {
+    color: white !important;
+    /* Ensures contrast */
+}
+
+.modal-title {
+    color: white;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    z-index: 10;
+}
+
+
+.glassmorphism {
+    background: rgba(255, 255, 255, 0.1);
+    /* Semi-transparent */
+    backdrop-filter: blur(15px);
+    /* Blur effect */
+    -webkit-backdrop-filter: blur(15px);
+    /* Safari support */
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-dialog {
+    position: fixed;
+    height: auto;
+    /* Adjust height as needed */
+    max-width: 600px;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 100%;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.animate-modal {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Visualizer */
+.visualizer-container {
+    position: fixed;
+    /* Change from absolute to fixed */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    /* Ensure it spans the full width */
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    /* Ensures bars are evenly spaced */
+    align-items: flex-end;
+    gap: 2px;
+    /* Reduce gap to make it fit perfectly */
+    padding: 0 5px;
+    /* Prevents gaps at the edges */
+    z-index: -1;
+    /* Keep it above other elements */
+}
+
+/* Top visualizer */
+.top-visualizer {
+    top: 0;
+    align-items: flex-start;
+    /* Align bars at the top instead of bottom */
+}
+
+/* Bottom visualizer */
+.bottom-visualizer {
+    bottom: 0;
+}
+
+/* Bars stay the same */
+.visualizer-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30px;
+}
+
+.smallest-box,
+.smaller-box,
+.bigger-box {
+    width: 100%;
+    transition: height 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    background: linear-gradient(to bottom, #00ccff, #0033cc);
+    opacity: 0.7;
+    /* Adjust opacity value */
+}
+
+.progress-container {
+    width: 100%;
+    height: 5px;
+    /* Adjust thickness */
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    /* Aligns with navbar */
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    transition: width 0.2s linear;
+}
+
+/* Modal Overlay */
+#featured-products-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+/* Glassmorphism Effect */
+#featured-products-modal .modal-content {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 80%;
+    width: 700px;
+    max-height: 80vh;
+    /* Prevents overflow */
+    overflow-y: auto;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+/* Custom Scrollbar */
+#featured-products-modal .product-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 items per row */
+    gap: 15px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+/* Custom Scrollbar Styling */
+#featured-products-modal .product-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#featured-products-modal .product-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 5px;
+}
+
+#featured-products-modal .product-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Product Card */
+#featured-products-modal .product-card {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    /* Adjust card height */
+    border-radius: 10px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s;
+}
+
+/* Gradient Overlay */
+#featured-products-modal .product-card .product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+}
+
+/* Product Info */
+#featured-products-modal .product-info {
+    position: relative;
+    z-index: 1;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: left;
+    color: white;
+}
+
+#featured-products-modal .product-name {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#featured-products-modal .product-genre {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Buttons */
+#featured-products-modal .btn {
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 8px;
+}
+
+#featured-products-modal .btn-primary {
+    background: linear-gradient(45deg, #ffcc00, #ff3366);
+    color: white;
+}
+
+#featured-products-modal .btn-danger {
+    background: #ff0033;
+    color: white;
+}
+
+#featured-products-modal .close-btn {
+    margin-top: 15px;
+}
