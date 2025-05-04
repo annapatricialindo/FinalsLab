@@ -6,6 +6,88 @@ from .models import CartItem, Cart, Order, OrderItem
 from .serializers import CartItemSerializer, OrderSerializer, OrderItemSerializer
 from accounts.permissions import IsCustomer, IsAdminOrEmployee
 
+# Add to cart
+class CartItemListCreateView(generics.ListCreateAPIView):
+    serializer_class = CartItemSerializer
+    permission_classes = [IsCustomer]
+
+    def get_queryset(self):
+        cart, _ = Cart.objects.get_or_create(user=self.request.user)
+        return CartItem.objects.filter(cart=cart)
+
+    def perform_create(self, serializer):
+        cart, _ = Cart.objects.get_or_create(user=self.request.user)
+        serializer.save(cart=cart)
+
+class CartItemUpdateView(generics.UpdateAPIView):
+    serializer_class = CartItemSerializer
+    permission_classes = [IsCustomer]
+
+    def get_queryset(self):
+        cart, _ = Cart.objects.get_or_create(user=self.request.user)
+        return CartItem.objects.filter(cart=cart)
+
+    def patch(self, request, *args, **kwargs):
+        cart_item = self.get_object()
+        quantity = request.data.get('quantity')
+
+        if quantity is not None:
+            # Update the quantity of the cart item
+            cart_item.quantity = quantity
+            cart_item.save()
+            return Response(self.get_serializer(cart_item).data, status=status.HTTP_200_OK)
+        return Response({'detail': 'Quantity is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+class CartItemDeleteView(generics.DestroyAPIView):
+    permission_classes = [IsCustomer]
+
+    def get_queryset(self):
+        cart, _ = Cart.objects.get_or_create(user=self.request.user)
+        return CartItem.objects.filter(cart=cart)
+
+    def perform_destroy(self, instance):
+        # Here, you can implement additional checks, e.g., whether the item exists in the cart.
+        instance.delete()
+
+class CartItemClearView(APIView):
+    permission_classes = [IsCustomer]
+
+    def post(self, request):
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        cart.items.all().delete()  # Delete all items in the user's cart
+        return Response({"detail": "Cart has been cleared."}, status=status.HTTP_204_NO_CONTENT)
+
+# Checkout
+class CheckoutView(APIView):
+    permission_classes = [IsCustomer]
+
+    def post(self, request):
+        user = request.user
+        cart, created = Cart.objects.get_or_create(user=user)
+        items = cart.items.select_related('product')
+
+        if not items.exists():
+            return Response({'detail': 'Cart is empty'}, status=status.HTTP_400_BAD_REQUEST)
+
+        with transaction.atomic():
+            order = Order.objects.create(customer=user, is_checked_out=True)
+
+            for item in items:
+                if item.quantity > item.product.stock:
+                    return Response(
+                        {'detail': f'Not enough stock for {item.product.name}'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity)
+                item.product.stock -= item.quantity
+                item.product.save()
+
+            # Clear the cart
+            items.delete()
+
+        return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
+    
+
 class CustomerOrderDetailView(generics.RetrieveAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
