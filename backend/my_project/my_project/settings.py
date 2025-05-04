@@ -44,8 +44,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'accounts',
-    'books',
-    'users',
     'products',
     'orders',
     'transactions',

@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.generics import ListAPIView
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from django.core.exceptions import ValidationError as DjangoValidationError
 from .models import Product
@@ -24,3 +25,10 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
             instance.delete()
         except DjangoValidationError as e:
             raise DRFValidationError({'detail': str(e)})
+        
+class ProductSearchView(ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        query = self.request.query_params.get('q', '')
+        return Product.objects.filter(name__icontains=query)

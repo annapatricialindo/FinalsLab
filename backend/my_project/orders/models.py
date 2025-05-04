@@ -8,9 +8,6 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_checked_out = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"Order #{self.id} by {self.customer.username}"
-
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='order_items')
@@ -20,9 +17,6 @@ class OrderItem(models.Model):
         if self.quantity > self.product.stock:
             raise ValidationError("Not enough stock for this product.")
         super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.quantity} x {self.product.name}"
 
 class Cart(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
