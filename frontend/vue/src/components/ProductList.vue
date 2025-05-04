@@ -1,34 +1,41 @@
 <template>
     <div class="slider">
-        <div v-for="(product, index) in products" :key="index" class="item" :class="{ active: index === active }"
-            :style="{
-                ...getSlideStyle(index),
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${product.BG})`
-            }" @click="$emit('select-product', product)">
+        <!-- Ensure products is not undefined or empty -->
+        <div v-if="products.length > 0">
+            <div v-for="(product, index) in products" :key="index" class="item" :class="{ active: index === active }"
+                :style="{
+                    ...getSlideStyle(index),
+                    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${product.image})`
+                }" @click="$emit('select-product', product)">
 
-            <!-- Genre Tag -->
-            <span class="genre-tag">{{ product.genre }}</span>
+                <!-- Genre Tag -->
+                <span class="genre-tag">{{ product.genre }}</span>
 
-            <!-- Title -->
-            <h3 class="card-title">{{ product.name }}</h3>
+                <!-- Title -->
+                <h3 class="card-title">{{ product.name }}</h3>
 
-            <!-- Description -->
-            <p class="card-description">{{ product.description }}</p>
+                <!-- Description -->
+                <p class="card-description">{{ product.description }}</p>
 
-            <!-- Price -->
-            <p class="card-price"><strong>${{ product.price }}</strong></p>
+                <!-- Price -->
+                <p class="card-price"><strong>${{ product.price }}</strong></p>
 
-            <div class="button-container">
-                <button @click="prevSlide" class="nav-btn" :disabled="transitioning">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button class="cart-btn" @click.stop="$emit('add-to-cart', product)">
-                    <i class="fas fa-cart-plus"></i>
-                </button>
-                <button @click="nextSlide" class="nav-btn" :disabled="transitioning">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
+                <div class="button-container">
+                    <button @click="prevSlide" class="nav-btn" :disabled="transitioning">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="cart-btn" @click.stop="$emit('add-to-cart', product)">
+                        <i class="fas fa-cart-plus"></i>
+                    </button>
+                    <button @click="nextSlide" class="nav-btn" :disabled="transitioning">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
+        </div>
+        <!-- Optionally handle empty or loading state -->
+        <div v-else>
+            <p>No products available.</p>
         </div>
     </div>
 </template>
@@ -40,7 +47,10 @@ import { useStore } from "vuex";
 export default {
     setup(_, { emit }) {
         const store = useStore();
-        const products = computed(() => store.getters.paginatedProducts);
+
+        // Make sure products defaults to an empty array to avoid accessing undefined
+        const products = computed(() => store.getters.products?.paginatedProducts || []);
+
         const active = ref(0);
         const transitioning = ref(false);
 

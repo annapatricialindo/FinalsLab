@@ -4,10 +4,11 @@
     <div class="background" :style="{ backgroundImage: 'url(/image/BG1.jpg)' }"></div>
 
     <!-- Main Content Split Left & Right -->
+    <transition name="fade">
     <div class="main-layout d-flex">
 
       <!-- LEFT SIDE: Welcome + Features -->
-      <div class="left-content d-flex flex-column justify-content-center text-white p-5">
+      <div class="left-content d-flex flex-column justify-content-center text-white p-5" v-show="showCard">
         <div class="hero-section text-center">
           <h1 class="display-3 fw-bold">Welcome to MusicTrack</h1>
           <p class="lead">Your one-stop shop for immersive music visual experiences</p>
@@ -48,16 +49,42 @@
         </ul>
       </div>
     </div>
+  </transition>
   </div>
 </template>
 
 <script>
+import { ref, onMounted } from 'vue';
+
+const showCard = ref(false);
+
+onMounted(() => {
+  setTimeout(() => {
+    showCard.value = true;
+  }, 100); // small delay to trigger fade-in
+});
+
 export default {
   name: 'HomeView',
 };
 </script>
 
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.8s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+}
+
 .home {
   height: 100vh;
   overflow: hidden;

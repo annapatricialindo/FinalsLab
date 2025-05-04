@@ -4,7 +4,9 @@ import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import ProductView from '@/views/ProductView.vue';
+import ProductManager from '@/views/ProductManager.vue';
 import AdminView from '@/views/AdminView.vue';
+import TransactionView from '@/views/TransactionView.vue';
 
 const routes = [
   {
@@ -32,6 +34,19 @@ const routes = [
     path: '/admin',
     name: 'admin',
     component: AdminView,
+    meta: { requiresAuth: true, role: ['admin', 'employee'] }
+  },
+  {
+    path: '/transaction',
+    name: 'transaction',
+    component: TransactionView,
+    meta: { requiresAuth: true, role: ['admin', 'employee'] }
+  },
+  
+  {
+    path: '/admin/product',
+    name: 'product-crud',
+    component: ProductManager,
     meta: { requiresAuth: true, role: ['admin', 'employee'] }
   }
 ];

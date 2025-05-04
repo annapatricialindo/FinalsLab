@@ -1,105 +1,168 @@
 export default {
+    namespaced: true,
     state: {
-        cart: JSON.parse(localStorage.getItem("cart")) || [],
-        products: [
-            { id: 1, name: "Neon Dreams", description: "A journey through retro synthwave beats and futuristic soundscapes.", genre: "Synthwave", price: 12, color: "#ff0066", audio: new Audio("/audio/Theme1.mp3"), BG: "/image/BG1.jpg", visualPrimaryColor: "#ffcc00", visualSecondaryColor: "#ff3366" },
-            { id: 2, name: "Acoustic Horizon", description: "Soothing guitar melodies mixed with raw, heartfelt vocals.", genre: "Acoustic", price: 10, color: "#ffbb33", audio: new Audio("/audio/Theme2.mp3"), BG: "/image/BG2.jpg", visualPrimaryColor: "#ffaa00", visualSecondaryColor: "#cc5500" },
-            { id: 3, name: "Midnight Groove", description: "A fusion of jazz and lo-fi beats perfect for late-night vibes.", genre: "Jazz Lo-Fi", price: 14, color: "#3366ff", audio: new Audio("/audio/Theme3.mp3"), BG: "/image/BG3.avif", visualPrimaryColor: "#6699ff", visualSecondaryColor: "#003366" },
-            { id: 4, name: "Eclipse Bass", description: "Dark, pulsating bass lines and hypnotic electronic rhythms.", genre: "EDM / House", price: 15, color: "#9900cc", audio: new Audio("/audio/Theme4.mp3"), BG: "/image/BG4.jpg", visualPrimaryColor: "#cc33ff", visualSecondaryColor: "#660099" },
-            { id: 5, name: "Golden Era", description: "A nostalgic throwback to classic hip-hop beats and lyrical mastery.", genre: "Hip-Hop", price: 13, color: "#ffaa00", audio: new Audio("/audio/Theme5.mp3"), BG: "/image/BG5.jpg", visualPrimaryColor: "#ffdd00", visualSecondaryColor: "#993300" },
-            { id: 6, name: "Celestial Echoes", description: "Ambient textures and ethereal sounds for a cosmic journey.", genre: "Ambient", price: 11, color: "#00cc99", audio: new Audio("/audio/Theme6.mp3"), BG: "/image/BG6.png", visualPrimaryColor: "#33ffcc", visualSecondaryColor: "#006644" },
-            { id: 7, name: "Heavy Riffs", description: "Powerful electric guitar solos and intense drum beats.", genre: "Rock / Metal", price: 16, color: "#cc0000", audio: new Audio("/audio/Theme7.mp3"), BG: "/image/BG7.jpg", visualPrimaryColor: "#ff3300", visualSecondaryColor: "#660000" },
-            { id: 8, name: "Reggae Vibes", description: "Feel the sun and the ocean breeze with classic reggae grooves.", genre: "Reggae", price: 12, color: "#33cc33", audio: new Audio("/audio/Theme8.mp3"), BG: "/image/BG8.jpg", visualPrimaryColor: "#66ff66", visualSecondaryColor: "#005500" },
-            { id: 9, name: "Orchestral Majesty", description: "A symphony of classical masterpieces and cinematic scores.", genre: "Classical", price: 18, color: "#9933ff", audio: new Audio("/audio/Theme9.mp3"), BG: "/image/BG9.jpg", visualPrimaryColor: "#cc99ff", visualSecondaryColor: "#330066" },
-            { id: 10, name: "Latin Fire", description: "A passionate mix of salsa, bachata, and flamenco rhythms.", genre: "Latin", price: 14, color: "#ff5500", audio: new Audio("/audio/Theme10.mp3"), BG: "/image/BG10.jpg", visualPrimaryColor: "#ff9966", visualSecondaryColor: "#662200" },
-            { id: 11, name: "Trap Nation", description: "Hard-hitting beats and deep bass for an urban sound.", genre: "Trap", price: 13, color: "#444444", audio: new Audio("/audio/Theme11.mp3"), BG: "/image/BG11.jpg", visualPrimaryColor: "#888888", visualSecondaryColor: "#222222" },
-            { id: 12, name: "Cyber Pulse", description: "Intense techno and cyberpunk-inspired electronic music.", genre: "Techno", price: 17, color: "#00ffff", audio: new Audio("/audio/Theme12.mp3"), BG: "/image/BG12.avif", visualPrimaryColor: "#66ffff", visualSecondaryColor: "#003366" },
-            { id: 13, name: "Country Roads", description: "A heartfelt collection of country classics and modern twangs.", genre: "Country", price: 12, color: "#cc6600", audio: new Audio("/audio/Theme13.mp3"), BG: "/image/BG13.jpg", visualPrimaryColor: "#ff9933", visualSecondaryColor: "#552200" },
-            { id: 14, name: "Funky Town", description: "Groovy bass lines and funky rhythms that make you move.", genre: "Funk", price: 15, color: "#ff66b2", audio: new Audio("/audio/Theme14.mp3"), BG: "/image/BG14.avif", visualPrimaryColor: "#66b3ff", visualSecondaryColor: "#ff33a8" },
-            { id: 15, name: "Blues Legends", description: "Soulful guitar solos and raw emotional storytelling.", genre: "Blues", price: 14, color: "#0033cc", audio: new Audio("/audio/Theme15.mp3"), BG: "/image/BG15.avif", visualPrimaryColor: "#6699ff", visualSecondaryColor: "#001144" }
-        ],
+        products: [],
         currentPage: 1,
-        itemsPerPage: 15,
-        activeIndex: 0, // Track the active product index
+        itemsPerPage: 0,
+        activeIndex: 0,
     },
     getters: {
-        cartItems: (state) => {
-            return state.cart.map(item => {
-                const product = state.products.find(product => product.id === item.id);
-                return { ...product, quantity: item.quantity }; // Combine product details with quantity
-            });
-        },
-        cartCount: (state) => (state.cart ? state.cart.length : 0),
         totalPages: (state) => Math.ceil(state.products.length / state.itemsPerPage),
         paginatedProducts: (state) => {
             const start = (state.currentPage - 1) * state.itemsPerPage;
             return state.products.slice(start, start + state.itemsPerPage);
         },
-        totalPrice: (state) =>
-            state.cart.reduce((sum, item) => {
-                const product = state.products.find(product => product.id === item.id);
-                return sum + product.price * item.quantity;
-            }, 0),
-        activeProduct: (state) =>
-            state.products[state.activeIndex] || state.products[0], // Ensure it's always valid
-        totalQuantity: (state) => {
-            return state.cart.reduce((total, item) => total + item.quantity, 0); // Sum up all quantities
-        },
+        activeProduct: (state) => state.products[state.activeIndex] || state.products[0],
     },
     mutations: {
-        ADD_TO_CART(state, product) {
-            const item = state.cart.find((item) => item.id === product.id);
-            if (item) {
-                item.quantity++; // Increase quantity if already in cart
-            } else {
-                state.cart.push({ id: product.id, quantity: 1 }); // Store only id and quantity
-            }
-            localStorage.setItem("cart", JSON.stringify(state.cart));
+        SET_PRODUCTS(state, products) {
+            state.products = products;
         },
-        UPDATE_QUANTITY(state, { id, quantity }) {
-            const item = state.cart.find((i) => i.id === id);
-            if (item) {
-                if (quantity <= 0) {
-                    state.cart = state.cart.filter((i) => i.id !== id); // Remove item if quantity is 0
-                } else {
-                    item.quantity = quantity;
-                }
-            }
-            localStorage.setItem("cart", JSON.stringify(state.cart));
+        ADD_PRODUCT(state, product) {
+            state.products.push(product);
         },
-        REMOVE_ITEM(state, id) {
-            state.cart = state.cart.filter((item) => item.id !== id);
-            localStorage.setItem("cart", JSON.stringify(state.cart));
+        UPDATE_PRODUCT(state, updatedProduct) {
+            const index = state.products.findIndex((p) => p.id === updatedProduct.id);
+            if (index !== -1) state.products.splice(index, 1, updatedProduct);
         },
-        CLEAR_CART(state) {
-            state.cart = [];
-            localStorage.setItem("cart", JSON.stringify(state.cart));
+        DELETE_PRODUCT(state, productId) {
+            state.products = state.products.filter((p) => p.id !== productId);
+        },
+        SET_ITEMS_PER_PAGE(state, count) {
+            state.itemsPerPage = count;
         },
         SET_ACTIVE_INDEX(state, index) {
             state.activeIndex = index;
         },
         NEXT_PRODUCT(state) {
-            state.activeIndex =
-                state.activeIndex < state.products.length - 1 ? state.activeIndex + 1 : 0;
+            state.activeIndex = state.activeIndex < state.products.length - 1 ? state.activeIndex + 1 : 0;
         },
         PREV_PRODUCT(state) {
-            state.activeIndex =
-                state.activeIndex > 0 ? state.activeIndex - 1 : state.products.length - 1;
+            state.activeIndex = state.activeIndex > 0 ? state.activeIndex - 1 : state.products.length - 1;
         },
     },
     actions: {
-        addToCart({ commit }, product) {
-            commit("ADD_TO_CART", product);
+        async fetchProducts({ commit, rootState }) {
+            try {
+                console.log("Fetching products...");
+                const token = rootState.auth.token;  // Ensure the token is available
+
+                const res = await fetch("http://localhost:8000/api/products/", {
+                    method: "GET",  // Explicitly specifying the GET method
+                    headers: {
+                        Authorization: `Bearer ${token}`,  // Token for authorization
+                        Accept: "application/json",  // Expecting JSON response
+                    },
+                });
+
+                if (!res.ok) throw await res.json();  // Handle non-OK responses
+
+                const data = await res.json();  // Parse the response body to JSON
+                console.log("Fetched data:", data);  // Debugging: log the fetched data
+
+                commit("SET_PRODUCTS", data);  // Commit data to Vuex store
+                commit("SET_ITEMS_PER_PAGE", data.length);  // Set the items per page
+            } catch (error) {
+                console.error("Failed to fetch products:", error);  // Handle errors
+            }
         },
-        updateQuantity({ commit }, payload) {
-            commit("UPDATE_QUANTITY", payload);
+
+        async createProduct({ commit, rootState }, productData) {
+            try {
+                const token = rootState.auth.token;
+
+                const formData = new FormData();
+                formData.append('name', productData.name);
+                formData.append('description', productData.description);
+                formData.append("stock", productData.stock);
+                formData.append('price', productData.price);
+                if (productData.image) {
+                    formData.append('image', productData.image); // Add image file here if exists
+                }
+
+                const res = await fetch("http://localhost:8000/api/products/", {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: formData,
+                });
+                if (!res.ok) throw await res.json();
+                const newProduct = await res.json();
+                commit("ADD_PRODUCT", newProduct);
+            } catch (error) {
+                console.error("Failed to create product:", error);
+                throw error;
+            }
         },
-        removeItem({ commit }, id) {
-            commit("REMOVE_ITEM", id);
+
+        async updateProduct({ commit, rootState }, productData) {
+            try {
+                const token = rootState.auth.token;
+
+                const formData = new FormData();
+                formData.append('name', productData.name);
+                formData.append('description', productData.description);
+                formData.append('price', productData.price);
+                formData.append("stock", productData.stock);
+
+                if (productData.image && !/^https?:\/\/[^ ]+$/.test(productData.image)) {
+                    formData.append('image', productData.image);  // Append image only if it's not a URL
+                }
+
+                const res = await fetch(`http://localhost:8000/api/products/${productData.id}/`, {
+                    method: "PUT",
+                    headers: {
+                        Authorization: `Bearer ${token}`,  // Keep the Authorization header
+                    },
+                    body: formData,  // The browser will set the correct Content-Type automatically
+                });
+
+                if (!res.ok) throw await res.json();
+                const updatedProduct = await res.json();
+                commit("UPDATE_PRODUCT", updatedProduct);
+            } catch (error) {
+                console.error("Failed to update product:", error);
+                throw error;
+            }
         },
-        clearCart({ commit }) {
-            commit("CLEAR_CART");
+
+        async deleteProduct({ commit, rootState }, productId) {
+            try {
+                const token = rootState.auth.token;
+                const res = await fetch(`http://localhost:8000/api/products/${productId}/`, {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                if (!res.ok) throw await res.json();
+                commit("DELETE_PRODUCT", productId);
+            } catch (error) {
+                console.error("Failed to delete product:", error);
+                throw error;
+            }
         },
+
+        async searchProducts({ commit, rootState }, query) {
+            try {
+                const token = rootState.auth.token;
+                const res = await fetch(`http://localhost:8000/api/products/search/?q=${query}`, {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    },
+                });
+
+                if (!res.ok) throw await res.json();
+                const data = await res.json();
+                commit("SET_PRODUCTS", data);  // Update products list with search results
+            } catch (error) {
+                console.error("Failed to search products:", error);
+            }
+        },
+
         setActiveIndex({ commit }, index) {
             commit("SET_ACTIVE_INDEX", index);
         },

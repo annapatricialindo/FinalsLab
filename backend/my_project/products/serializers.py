@@ -5,3 +5,6 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+        extra_kwargs = {
+            'image': {'required': False}  # Make image optional when updating
+        }
